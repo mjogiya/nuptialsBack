@@ -43,6 +43,25 @@ app.post('/register/new', (req, res) => {
 });
 
 
+// app.get('/', (req, res) => {
+    
+//     // const sqlinsert = "INSERT INTO login(username, email, password) VALUES('Yash', 'yash@gmail.com', '12345');";
+//     // con.query(sqlinsert, (err, result) => {
+
+//     //     res.send("Data Inserted :))");
+//     // });
+
+//     // con.query('SELECT * FROM login',function(err,rows){
+//     //   //if(err) throw err;
+      
+//     //   // console.log('Data received from Db:\n');
+//     //   console.log(rows);
+//     //   var data = rows;
+//     //   res.send(rows);
+//     //   res.send("Outside--"+data.username);
+//     //   // res.render('userIndex', { title: 'User Information', dataGet: data });
+//     // });
+// });
 
 app.listen(3001, () => {
     console.log("Listening on 3001");
