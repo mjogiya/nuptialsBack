@@ -24,6 +24,8 @@ con.connect(function(error){
       console.log(error);
     }else{
       console.log('Connected!:)');
+      
+      
     }
   });
   var Profilefor;
@@ -60,9 +62,17 @@ router.post('/userdata', (req, res) => {
     const profession = req.body.profession;
     const income = req.body.income;
     const about = req.body.about;
-    console.log(email);
-    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, dob, city) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
-    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, dob, city], (err, res) => {
+
+    let ts = Date.now();
+
+    let date_ob = new Date(ts);
+    let date = date_ob.getDate();
+    let month = date_ob.getMonth() + 1;
+    let year = date_ob.getFullYear();
+    let registerDate = year + "-" + month + "-" + date;
+
+    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, dob, city, request, register) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
+    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, dob, city, "Pending", registerDate], (err, res) => {
         console.log(err);
     })
     con.query("INSERT INTO userdata (email, mobile, livewith, maritalstatus, children, diet, subcommunity, qualification, workin, profession, income, about) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
