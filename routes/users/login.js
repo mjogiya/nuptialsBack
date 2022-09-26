@@ -4,7 +4,8 @@ const Cors = require('cors');
 const router = express.Router();
 const mysql = require("mysql");
 // const app = express();
-
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 const con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -15,11 +16,21 @@ const con = mysql.createConnection({
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(Cors({
   origin: 'http://localhost:3001',
+  methods: ["POST", "GET"],
   credentials: true,
 }));
 router.use(express.json());
 router.use(express.urlencoded({ extended: false }));
-
+router.use(cookieParser());
+router.use(session({
+    key: "userId",
+    secret: "nuptials",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 60 * 60 * 24 *1000
+    }
+}));
 
 con.connect(function(error){
     if(!!error){
@@ -29,18 +40,19 @@ con.connect(function(error){
     }
   });
 
-router.post('/findmatch', (req, res) => {
-  const lookingfor = req.body.lookingfor1;
-  const startage = req.body.startage1;
-  const endage = req.body.endage1;
-  const religion = req.body.religion1;
-  const mothertong = req.body.mothertong1;
-  
-  const insert = "INSERT INTO findmatch (lookingfor, startage, endage, religion, mothertong) VALUES(?, ?, ?, ?, ?);";
-  con.query(insert, [lookingfor, startage, endage, religion, mothertong], (err, result) => {
+router.post('/login', (req, res) => {
+  con.query("SELECT * FROM register where email= ? AND  password = ? AND request='Approved' ", [req.body.email, req.body.password], (err, result) => {
     console.log(err);
-    
+    console.log(result);
+    if(result.length>0) {
+        req.session.user = result;
+        res.send({userLogedin: true});
+    } else {
+        res.send({userLogedin: false});
+    }
+
   });
+  
 });
 
 

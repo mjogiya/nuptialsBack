@@ -13,7 +13,7 @@ const con = mysql.createConnection({
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(Cors({
-  origin: 'http://localhost:3000',
+  origin: 'http://localhost:3001',
   credentials: true,
 }));
 router.use(express.json());
@@ -24,8 +24,6 @@ con.connect(function(error){
       console.log(error);
     }else{
       console.log('Connected!:)');
-      
-      
     }
   });
   var Profilefor;
@@ -47,6 +45,7 @@ router.post('/newuser', (req, res) => {
         mothertongUser = req.body.mothertongUser;
         email = req.body.email;
         mobile = req.body.mobile;
+        password = req.body.password;
         dob = req.body.dob;
         city = req.body.city;
 })
@@ -71,8 +70,8 @@ router.post('/userdata', (req, res) => {
     let year = date_ob.getFullYear();
     let registerDate = year + "-" + month + "-" + date;
 
-    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, dob, city, request, register) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
-    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, dob, city, "Pending", registerDate], (err, res) => {
+    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, password, dob, city, request, register) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
+    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, password, dob, city, "Pending", registerDate], (err, res) => {
         console.log(err);
     })
     con.query("INSERT INTO userdata (email, mobile, livewith, maritalstatus, children, diet, subcommunity, qualification, workin, profession, income, about) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
