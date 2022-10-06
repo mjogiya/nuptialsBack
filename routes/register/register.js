@@ -3,6 +3,7 @@ const router = express.Router();
 const bodyParser = require('body-parser');
 const Cors = require('cors');
 const mysql = require('mysql');
+const fileupload = require("express-fileupload");
 
 const con = mysql.createConnection({
     host: "localhost",
@@ -10,6 +11,8 @@ const con = mysql.createConnection({
     password: "",
     database: "Nuptials"
 });
+router.use(fileupload());
+router.use(express.static("files"));
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(Cors({
@@ -70,14 +73,27 @@ router.post('/userdata', (req, res) => {
     let year = date_ob.getFullYear();
     let registerDate = year + "-" + month + "-" + date;
 
-    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, password, dob, city, request, register) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
-    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, password, dob, city, "Pending", registerDate], (err, res) => {
-        console.log(err);
-    })
+    const newpath = "../nuptials/public/usersimages/";
+    const adminpath = "../../Admin Nuptials/client/public/usersimages/"
+    const file = req.files.file;
+    const filename = file.name;
+    const file2 = req.files.file;
+    const filename2 = file2.name;
+    file.mv(`${newpath}${filename}`, (err) => {
+      if (err) {
+        res.status(500).send({ message: "File upload failed", code: 200 });
+      }
+      res.status(200).send({ message: "File Uploaded", code: 200 });
+    });
+    con.query("INSERT INTO register (firstn, lastn, profilefor, gender, religion, mothertong, email, mobile, password, dob, city, request, register, profileimage) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);", 
+    [firstName, lastName, Profilefor, gender, religionUser, mothertongUser, email, mobile, password, dob, city, 'Pending', registerDate, `/usersimages/${filename}`], (err, res) => {
+    });
     con.query("INSERT INTO userdata (email, mobile, livewith, maritalstatus, children, diet, subcommunity, qualification, workin, profession, income, about) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);",
     [email, mobile, livewith, maritalStatus, children, diet, subCommunity, qualification, workwith, profession, income, about], (err, res) => { 
-      console.log(err);
-    })
+    });
+    file2.mv(`${adminpath}${filename2}`, (err) => {
+      
+    });
 })
 
-module.exports=router
+module.exports=router;
